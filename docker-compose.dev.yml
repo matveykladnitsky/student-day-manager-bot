@@ -17,8 +17,6 @@ services:
       retries: 3
     networks:
       - student-day-manager-dev-network
-    ports:
-      - 8000:8000
 
   nginx-service:
     container_name: nginx
