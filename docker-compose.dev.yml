@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  backend-service:
+    container_name: backend-service
+    environment:
+      DEBUG: 1
+    build:
+      context: ./backend-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend-service:/backend-service
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - student-day-manager-dev-network
+    ports:
+      - 8000:8000
+
+  nginx-service:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:80
+    volumes:
+      - ./nginx-service:/nginx-service
+    networks:
+      - student-day-manager-dev-network
+    depends_on:
+      - backend-service
+
+networks:
+  student-day-manager-dev-network:
+    name: student-day-manager-dev-network
